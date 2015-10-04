@@ -21,7 +21,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                 <tr class="form-group">
                     <td>
                         <label for="<?php echo $name; ?>">
-                            <?php echo __('model-'.$element->object_name().'-'.$name); ?>
+                            <?php echo __('model.'.$element->object_name().'.'.$name); ?>
                         </label>
                     </td>
 
@@ -86,7 +86,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                                 $options = array();
 
                                 foreach($keys as $key) {
-                                    $options[$key] = __('model-'.$element->object_name().'-'.$name.'-'.$key);
+                                    $options[$key] = __('model.'.$element->object_name().'.'.$name.'.'.$key);
                                 }
 
                                 echo Form::select($name, $options, $element->{$name}, array('class' => 'form-control',
@@ -133,7 +133,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                                                 </button>
 
                                                 <h4 class="modal-title" id="label-modal-<?php echo $name; ?>">
-                                                    <?php echo __('model-'.$element->object_name().'-'.$name); ?>
+                                                    <?php echo __('model.'.$element->object_name().'.'.$name); ?>
                                                 </h4>
                                             </div>
 
@@ -184,8 +184,8 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th style="width: 50%;"><?php echo __('model-'.lcfirst($model).'-has_many_through-name') ?></th>
-                    <th style="width: 50%;"><?php echo __('model-'.lcfirst($model).'-has_many_through-associations') ?></th>
+                    <th style="width: 50%;"><?php echo __('model.'.lcfirst($model).'.has_many_through.name') ?></th>
+                    <th style="width: 50%;"><?php echo __('model.'.lcfirst($model).'.has_many_through.associations') ?></th>
                 </tr>
             </thead>
 
@@ -199,7 +199,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                     <tr class="form-group">
                         <td>
                             <label for="<?php echo $name; ?>">
-                                <?php echo __('model-'.lcfirst($model).'-'.$relation); ?>
+                                <?php echo __('model.'.lcfirst($model).'.'.$relation); ?>
                             </label>
                         </td>
 

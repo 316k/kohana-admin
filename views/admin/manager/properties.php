@@ -38,7 +38,7 @@ foreach($methods as $method) {
             <tr>
                 <td>{<?php echo $model_name ?>|<?php echo $property ?>}</td>
                 <td><?php echo $value ?></td>
-                <?php $description = 'model-'.strtolower($model_name).'-'.$property ?>
+                <?php $description = 'model.'.strtolower($model_name).'.'.$property ?>
                 <td><?php echo __($description) === $description ? '-' : __($description) ?></td>
             </tr>
         <?php endforeach ?>
