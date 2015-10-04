@@ -6,8 +6,8 @@ return array(
 
     'general-name' => 'Nom',
     'general-edit' => 'Modifier',
-    'general-delete' => 'Supprimer',
-    'general-add' => 'Ajouter',
-    'general-value' => 'Valeur',
-    'general-submit' => 'Soumettre',
+    'general.delete' => 'Supprimer',
+    'general.add' => 'Ajouter',
+    'general.value' => 'Valeur',
+    'general.submit' => 'Soumettre',
 );

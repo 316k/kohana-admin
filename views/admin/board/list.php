@@ -44,7 +44,7 @@ foreach(Arr::get($details, 'list_buttons') as $button => $options) {
     foreach($options['button'] as $attr => $value) {
         $options['button'][$attr] = str_replace(':model', $model_name, $value);
     }
-    $button = 'general-'.$button;
+    $button = 'general.'.$button;
     $buttons[$options['position']][$button] = $options;
 }
 
@@ -55,7 +55,7 @@ $list_fields = Arr::get($details, 'list_fields', array('__toString'));
     <thead>
         <tr>
             <?php foreach($list_fields as $field): ?>
-                <th><?php echo __('general.'.$model_name.'.'.$field); ?></th>
+                <th><?php echo __('model.'.$model_name.'.'.$field); ?></th>
             <?php endforeach ?>
             <th></th>
         </tr>
