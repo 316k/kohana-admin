@@ -109,7 +109,7 @@ Notes :
 
 ## TODO
 
-[ ] Non-bootstrap template
-[ ] Clean the filter view
-[ ] Find a way not to use this module in the subfolder of a server without
+- [ ] Non-bootstrap template
+- [ ] Clean the filter view
+- [ ] Find a way not to use this module in the subfolder of a server without
 forcing a protocol ('http') with URL::site
