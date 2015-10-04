@@ -18,7 +18,7 @@ $ git commit -m 'Added kohana-admin'
 ### Mercurial (`hg`)
 
 ```bash
-$ echo "modules/kohana-admin = [git]git://github.com/316k/kohana-admin.git" > .hgsub
+$ echo "modules/kohana-admin = [git]git://github.com/316k/kohana-admin.git" >> .hgsub
 $ hg add .hgsub
 $ git clone git://github.com/316k/kohana-admin.git modules/kohana-admin
 ```
