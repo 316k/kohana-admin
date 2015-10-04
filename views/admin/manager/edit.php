@@ -6,8 +6,8 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
     <table class="table table-striped">
         <thead>
             <tr>
-                <th><?php echo __('general-name'); ?></th>
-                <th><?php echo __('general-value'); ?></th>
+                <th><?php echo __('general.name'); ?></th>
+                <th><?php echo __('general.value'); ?></th>
             </tr>
         </thead>
 
