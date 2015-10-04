@@ -27,7 +27,6 @@ trait Manager {
                 // Wrong credentials.
                 $this->redirect(URL::site('admin/login/wrong', 'http'));
             }
-            
         }
         
         $this->content = View::factory('admin/login', array(
@@ -148,7 +147,9 @@ trait Manager {
         $user->username = $username;
         $user->password = $password;
         $user->save();
-        $role = ORM::factory('roles_users', 1);
-        $user->add($role);
+        $role = ORM::factory('Role', 1);
+        $user->add('roles', $role);
+        $role = ORM::factory('Role', 2);
+        $user->add('roles', $role);
     }
 }

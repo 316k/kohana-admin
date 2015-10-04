@@ -217,7 +217,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
 
     <?php
     echo Form::hidden('model', $model). // TODO : Is this necessary ?
-         Form::submit(null, __('general-submit'), array('class' => 'form-control btn btn-success'));
+         Form::submit(null, __('general.submit'), array('class' => 'form-control btn btn-success'));
 
     // Prefilling a field with a GET parameter
     // TODO : Rewrite this
