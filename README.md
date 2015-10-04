@@ -20,7 +20,7 @@ $ git commit -m 'Added kohana-admin'
 ```bash
 $ echo "modules/kohana-admin = [git]git://github.com/316k/kohana-admin.git" > .hgsub
 $ hg add .hgsub
-$ git clone git://github.com/316k/kohana-admin.git modules/nested
+$ git clone git://github.com/316k/kohana-admin.git modules/kohana-admin
 ```
 
 ### Anything else
@@ -37,7 +37,7 @@ Fields you'll probably have to change :
 
 - `browse_for_fields` : Array of objects => belongs_to relation that should be filled using an external window to find the matching model,
 - `ignored_fields` : Array of objects => fields that shouldn't editable from the editor,
-- `modules` => Defined below,
+- `modules` : Defined below
 - `default_tab ` : Name of the module (ModelName) that shoud be shown by default,
 
 Fields you might not touch in simple projects :
