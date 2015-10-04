@@ -55,7 +55,13 @@ $list_fields = Arr::get($details, 'list_fields', array('__toString'));
     <thead>
         <tr>
             <?php foreach($list_fields as $field): ?>
-                <th><?php echo __('model.'.strtolower($model_name).'.'.$field); ?></th>
+                <th>
+                    <?php if($field == '__toString'): ?>
+                        <?php echo __('general.name') ?>
+                    <?php else: ?>
+                        <?php echo __('model.'.strtolower($model_name).'.'.$field); ?>
+                    <?php endif ?>
+                </th>
             <?php endforeach ?>
             <th></th>
         </tr>
