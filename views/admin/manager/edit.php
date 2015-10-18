@@ -235,25 +235,25 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
     <?php } ?>
 </form>
 <?php
-$hashed_inputs = Kohana::$config->load('admin.hashed_fields.'.$element->object_name()) ?: array();
+$protected_inputs = Kohana::$config->load('admin.protected_fields.'.$element->object_name()) ?: array();
 // Use array("field" => "field", ...) instead of array(0 => "field", ...)
-$hashed_inputs = array_combine($hashed_inputs, $hashed_inputs);
+$protected_inputs = array_combine($protected_inputs, $protected_inputs);
 ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        var hashed_inputs = <?php echo json_encode($hashed_inputs) ?>;
+        var protected_inputs = <?php echo json_encode($protected_inputs) ?>;
         
         $('form#edit').submit(function() {
-            for(var input in hashed_inputs) {
+            for(var input in protected_inputs) {
                 $('#'+input, this).prop('disabled', true);
             }
         });
         
         // Hashed inputs
-        for(var input in hashed_inputs) {
+        for(var input in protected_inputs) {
             $('#' + input).val('(cliquez pour modifier)').click(function() {
                 $(this).val('');
-                delete hashed_inputs[input];
+                delete protected_inputs[input];
             });
         };
     });

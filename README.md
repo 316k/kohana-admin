@@ -33,7 +33,7 @@ $ git clone git://github.com/316k/kohana-admin.git modules/kohana-admin
 
 Copy the file `modules/kohana-admin/config/admin.php` to APPPATH/config/admin.php and edit it :
 
-Fields you'll probably have to change :
+Fields you might want to change :
 
 - `browse_for_fields` : Array of objects => belongs_to relation that should be filled using an external window to find the matching model,
 - `ignored_fields` : Array of objects => fields that shouldn't editable from the editor,
@@ -43,7 +43,7 @@ Fields you'll probably have to change :
 Fields you might not touch in simple projects :
 
 - `redirect` : redirection URL after . Note that :model is replaced by the currently edited model name (e.g.: "User")
-- `hashed_fields` : Array of objects => fields that are hashed on modification (this is to avoid rehashing a field that hasn't been modified by the user)
+- `protected_fields` : Array of objects => fields that should not be sent if they aren't modified (e.g.: to avoid automatic rehashing of a field or unnecessarily updating dates)
 - `null_value` : A string value that should be interpreted as `NULL`. "{NULL_ON_PURPOSE}" is the default one, and should pretty much do it.
 
 Note the the "Array of objects => field ..." follow this structure :

@@ -4,7 +4,7 @@ return array(
     // Edit
     'browse_for_fields' => array(),
     'ignored_fields' => array(),
-    'hashed_fields' => array(
+    'protected_fields' => array(
         'user' => array('password'),
     ),
     'redirect' => "/admin/board/#tab:model",
