@@ -24,7 +24,11 @@ $default_tab = Kohana::$config->load('admin.default_tab') ?: Arr::get(array_keys
             continue;
         }
 
-        $models = Arr::get($details, 'models', ORM::factory($module));
+        $models = Arr::get($details, 'models', FALSE);
+
+        if($models === FALSE) {
+            $models = ORM::factory($module)->find_all();
+        }
         ?>
         <div class="tab-pane<?php echo $default_tab == $module ? ' active' : '' ?>" id="tab<?php echo ucfirst($module); ?>">
             <?php
