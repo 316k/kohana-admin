@@ -10,7 +10,7 @@ Add it to your project as a submodule :
 ### Git :
 
 ```bash
-$ git submodule add git://github.com/316k/kohana-admin.git system
+$ git submodule add https://github.com/316k/kohana-admin.git system
 $ git submodule init
 $ git commit -m 'Added kohana-admin'
 ```
@@ -64,7 +64,7 @@ Modules follow this structure :
 ```
     "modules" => array(
         "CapitalizedModelName" => array( // As in ORM::factory('ModelName')
-            'icon' => 'glyphicon glyphicon-cog', // Though for glyphicons or Font-Awesome, but any 'class' value you would put in a <i> tag
+            'icon' => 'glyphicon glyphicon-cog', // Thought for glyphicons or Font-Awesome, but any 'class' value you would put in a <i> tag
             'views' => array('list', ...), // Views to concatenate in the module's tab (see below)
             'list_buttons' => array('add', 'edit', 'delete') // Buttons for the 'list' view (see below)
             'list_fields' => array('__toString', 'name', 'date') // Fields to display in the 'list' view (default : array('__toString'))
