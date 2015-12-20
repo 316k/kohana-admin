@@ -21,7 +21,7 @@ foreach(Arr::get($details, 'list_buttons') as $button => $options) {
                 'target' => '_blank',
             ),
             'delete' => array(
-                'onclick' => "confirm_delete(':model', :id)",
+                'onclick' => "confirm_delete(':model', ':id')",
                 'class' => 'btn btn-danger',
                 'href' => '#!',
             )
