@@ -30,7 +30,7 @@
         $('input[name=filter-<?php echo $unique; ?>]').change(function() {
             
             
-            $('#tab<?php echo ucfirst($model); ?> tbody tr').each(function() {
+            $('#tab<?php echo ucfirst($model_name); ?> tbody tr').each(function() {
                 $(this).show();
                 $(this).not(':containsIgnoreCase('+ $('input[name=filter-<?php echo $unique; ?>]').val() +')').hide();
             });
