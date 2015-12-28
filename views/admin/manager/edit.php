@@ -205,8 +205,13 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
 
                         <td>
                             <?php
-                            echo Form::select($relation.'[]', ORM::factory(ucfirst($options['model']))->find_all()
-                                     ->as_array('id', null), $element->{$relation}->find_all()->as_array(null, 'id'), array('multiple' => true, 'style' => 'width: 100%;'));
+                            $relations = ORM::factory(ucfirst($options['model']))->find_all()->as_array('id', null);
+                            $selected = $element->{$relation}->find_all()->as_array(null, 'id');
+
+                            echo Form::select($relation.'[]', $relations, $selected, array(
+                                'multiple' => true,
+                                'style' => 'width: 100%;'
+                            ));
                             ?>
                         </td>
                     </tr>
