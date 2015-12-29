@@ -146,6 +146,47 @@ trait Manager {
         ));
     }
     
+    private function post_forgot_password($user) {
+        // Overload to send an email, notify, redirect, etc.
+        // Note that $user might *not* be loaded
+    }
+    
+    public function action_forgot_password() {
+        if($this->request->method() === Request::POST) {
+            $user = ORM::factory('User', array('email' => $this->request->post('email')));
+            
+            if($user->loaded()) {
+                
+                $user->last_password_reset = time();
+                $user->password_reset_token = Text::random(NULL, 64);
+                
+                $user->save();
+            }
+            $this->post_forgot_password($user);
+        }
+        
+        $this->content = View::factory('admin/forgot_password');
+    }
+    
+    public function action_reset_password() {
+        $token = $this->request->param('id');
+        $email = Arr::get($_GET, 'email');
+        $user = ORM::factory('User', array('password_reset_token' => $token, 'email' => $email));
+        
+        if(!$user->loaded() || $user->last_password_reset < time() - Date::MINUTE * 20)
+            throw new HTTP_Exception_403();
+        
+        if($this->request->method() === Request::POST) {
+            $user->password = $this->request->post('password');
+            $user->password_reset_token = NULL;
+            
+            $user->save();
+            $this->redirect(URL::site('admin/login', 'http'));
+        }
+        
+        $this->content = View::factory('admin/reset_password');
+    }
+    
     /**
      * Call this to create an arbitrary user, you'll probably need to do this
      * at the beginning of a project
