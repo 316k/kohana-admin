@@ -39,30 +39,33 @@ trait Manager {
         $this->redirect(URL::site('/', 'http'));
     }
     
+    public function manager_list() {
+        $class_names = array_keys(Arr::flatten(Kohana::list_files('classes/Model')));
+        $classes = array();
+        
+        foreach($class_names as $class_name) {
+            $class_name = str_replace(array('classes/Model/', '.php', '/'), array('', '', '_'), $class_name);
+            
+            if(!is_subclass_of('Model_'.$class_name, 'ORM')) {
+                continue;
+            }
+            
+            try {
+                $model = ORM::factory($class_name);
+                $classes[] = $class_name;
+            } catch(Database_Exception $dbe) {
+                // Ignore field, unused class
+            }
+        }
+
+        return View::factory('admin/manager/models', array('classes' => $classes));
+    }
+    
     public function action_manager() {
         
-        // No model : list available models
+        // No model specified : list available models
         if(!$this->request->param('model')) {
-            
-            $class_names = array_keys(Arr::flatten(Kohana::list_files('classes/Model')));
-            $classes = array();
-            
-            foreach($class_names as $class_name) {
-                $class_name = str_replace(array('classes/Model/', '.php', '/'), array('', '', '_'), $class_name);
-                
-                if(!is_subclass_of('Model_'.$class_name, 'ORM')) {
-                    continue;
-                }
-                
-                try {
-                    $model = ORM::factory($class_name);
-                    $classes[] = $class_name;
-                } catch(Database_Exception $dbe) {
-                    // Ignore field, unused class
-                }
-            }
-
-            $this->content = View::factory('admin/manager/models', array('classes' => $classes));
+            $this->content = $this->manager_list();
             return;
         }
         
@@ -80,6 +83,7 @@ trait Manager {
             
             // "has many through" list.
             $has_many_through_list = array();
+            $has_many_through_elements = array();
             
             foreach($element->has_many() as $relation => $options) {
                 if(@$options['through'] != '') {
@@ -99,12 +103,17 @@ trait Manager {
                 
                 // "has many through" case.
                 if(array_key_exists($key, $has_many_through_list)) {
-                    $element->add($key, $posted_value);
+                    $has_many_through_elements[$key] = $posted_value;
                 }
             }
 
             try {
                 $element->values($posted_values)->save();
+                
+                foreach($has_many_through_elements as $key => $posted_value) {
+                    $element->add($key, $posted_value);
+                }
+                $element->save();
                 
                 Notification::instance()->add('success', __('success-edit', array(':name' => (string) $element)));
                 
@@ -124,8 +133,8 @@ trait Manager {
             }
         } elseif($this->request->param('mode') == 'delete') {
             
-            Notification::instance()->add('success', __('success-delete', array(':name' => (string) $element)));
             $element->delete();
+            Notification::instance()->add('success', __('success-delete', array(':name' => (string) $element)));
             $this->redirect($redirect);
             
         }
