@@ -172,9 +172,9 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
     $has_many_through = false;
     
     foreach($element->has_many() as $relation => $options) {
-        if(@$options['through'] != '') {
-            $has_many_through = true;
-        }
+        $has_many_through = $has_many_through ||
+            (Arr::get($options, 'through') != '' &&
+            !in_array($relation, Arr::get($ignored_fields, $element->object_name(), array())));
     }
     
     $model = $element->object_name();
@@ -184,15 +184,15 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th style="width: 50%;"><?php echo __('model.'.lcfirst($model).'.has_many_through.name') ?></th>
-                    <th style="width: 50%;"><?php echo __('model.'.lcfirst($model).'.has_many_through.associations') ?></th>
+                    <th style="width: 50%;"><?php echo __('model.'.$model.'.has_many_through.name') ?></th>
+                    <th style="width: 50%;"><?php echo __('model.'.$model.'.has_many_through.associations') ?></th>
                 </tr>
             </thead>
 
             <tbody>
                 <?php
                 foreach($element->has_many() as $relation => $options) {
-                    if(@$options['through'] == '') {
+                    if(@$options['through'] == '' || in_array($relation, Arr::get($ignored_fields, $element->object_name(), array()))) {
                         continue;
                     }
                 ?>
