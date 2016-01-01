@@ -1,8 +1,19 @@
 <?php
 $browse_for_fields = Kohana::$config->load('admin.browse_for_fields');
-$ignored_fields = Kohana::$config->load('admin.ignored_fields');
+$ignored_fields = Arr::get(Kohana::$config->load('admin.ignored_fields'), $element->object_name(), array());
+$upload_fields = Arr::get(Kohana::$config->load('admin.upload_fields'), $element->object_name(), array());
+$fields_attributes = Arr::get(Kohana::$config->load('admin.fields_attributes'), $element->object_name(), array());
+
+$form = array(
+    'id' => 'edit',
+    'class' => 'col-xs-12',
+);
+
+if($upload_fields)
+    $form['enctype'] = 'multipart/form-data';
+
+echo Form::open(NULL, $form);
 ?>
-<form method="POST" action="#" id="edit" class="col-xs-12">
     <table class="table table-striped">
         <thead>
             <tr>
@@ -14,9 +25,10 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
         <tbody>
             <?php
             foreach($element->table_columns() as $name => $infos) {
-                if($infos['key'] == 'PRI' || in_array($name, Arr::get($ignored_fields, $element->object_name(), array()))) {
+                if($infos['key'] == 'PRI' || in_array($name, $ignored_fields)) {
                     continue;
                 }
+                $attr = Arr::get($fields_attributes, $name, array()) + array('id' => $name);
             ?>
                 <tr class="form-group">
                     <td>
@@ -26,7 +38,9 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                     </td>
 
                     <td style="width: 40%;">
+                        
                         <?php
+                        // TODO : Rewrite this
                         $hasForeignKey = false;
 
                         // Finds all the values for the foreign data (primary key as label and
@@ -43,11 +57,10 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                                         }
 
                                         foreach($relations as $rel) {
-                                            $select_options[$rel->pk()] = (String) $rel;
+                                            $select_options[$rel->pk()] = (string) $rel;
                                         }
 
-                                        echo Form::select($name, $select_options, $element->{$name}, array('class' => 'form-control',
-                                                                                                              'id'    => $name));
+                                        echo Form::select($name, $select_options, $element->{$name}, $attr + array('class' => 'form-control'));
                                         $hasForeignKey = true;
                                     } else {
                                         echo __('general-too_many_entries');
@@ -57,29 +70,39 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                         }
 
                         if(!$hasForeignKey) {
-                            if(in_array($name, $browse_for_fields)) {
-                                echo Form::hidden($name, $element->{$name}, array('id' => $name));
+                            if(in_array($name, $upload_fields)) {
+                                echo Form::file($name, $attr + array(
+                                    'style' => 'width: 95%; display: inline;'
+                                ));
+                                
+                                if($element->{$name}) {
+                                    echo '<abbr title="'.__('general.file.uploaded').'"><i class="glyphicon glyphicon-ok-sign" style="display: inline; color: green;"></i></abbr>';
+                                }
+                            } else if(in_array($name, $browse_for_fields)) {
+                                echo Form::hidden($name, $element->{$name}, $attr);
 
                                 echo '<a href="#!" onclick="window.open(\'/admin/search_panel/'.$name.'/'.$id.'\', \'dataitem\', \'toolbar=no,menubar=no,scrollbars=yes,width=700px,height=500px\');">
                                           Parcourir la liste <i class="glyphicon glyphicon-search"></i>
                                       </a>';
                             } else if(strstr($infos['data_type'], 'tinyint')) {
                                 // Boolean data.
-                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() ? $element->{$name} != 1 : false).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
-                                     '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->{$name} == 1, array('id' => $name)).' '.__('general-yes').'</label>';
+                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() && $element->{$name} !== 1).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
+                                     '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->loaded() && $element->{$name} === 1, array('id' => $name)).' '.__('general-yes').'</label>';
 
                             } else if(strstr($infos['data_type'], 'float')) {
                                 // For floating numbers.
-                                echo Form::input($name, $element->{$name}, array('type'  => 'number',
-                                                                                    'step'  => 'any',
-                                                                                    'class' => 'form-control',
-                                                                                    'id'    => $name));
+                                echo Form::input($name, $element->{$name}, $attr + array(
+                                    'type'  => 'number',
+                                    'step'  => 'any',
+                                    'class' => 'form-control',
+                                ));
 
                             } else if(strstr($infos['data_type'], 'int')) {
                                 // For numbers.
-                                echo Form::input($name, $element->{$name}, array('type'  => 'number',
-                                                                                    'class' => 'form-control',
-                                                                                    'id'    => $name));
+                                echo Form::input($name, $element->{$name}, $attr + array(
+                                    'type'  => 'number',
+                                    'class' => 'form-control',
+                                ));
                             } else if(strstr($infos['data_type'], 'enum')) {
                                 // A select box for enum values.
                                 $keys = $element->enum_field_values($name);
@@ -89,27 +112,31 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                                     $options[$key] = __('model.'.$element->object_name().'.'.$name.'.'.$key);
                                 }
 
-                                echo Form::select($name, $options, $element->{$name}, array('class' => 'form-control',
-                                                                                               'id'    => $name));
+                                echo Form::select($name, $options, $element->{$name}, $attr + array(
+                                    'class' => 'form-control',
+                                ));
 
                             } else if(strstr($infos['data_type'], 'datetime')) {
                                 // Date inputs.
-                                echo Form::input($name, $element->{$name}, array('placeholder' => 'AAAA-MM-JJ HH:mm:ss',
-                                                                                    'class'       => 'datetimepicker form-control',
-                                                                                    'id'          => $name));
+                                echo Form::input($name, $element->{$name}, $attr + array(
+                                    'placeholder' => 'AAAA-MM-JJ HH:mm:ss',
+                                    'class' => 'datetimepicker form-control',
+                                ));
 
                             } else if(strstr($infos['data_type'], 'date')) {
                                 // Date inputs.
-                                echo Form::input($name, $element->{$name}, array('placeholder' => 'AAAA-MM-JJ',
-                                                                                    'class'       => 'datepicker form-control',
-                                                                                    'id'          => $name));
+                                echo Form::input($name, $element->{$name}, $attr + array(
+                                    'placeholder' => 'AAAA-MM-JJ',
+                                    'class' => 'datepicker form-control',
+                                ));
                             } else if(strstr($infos['data_type'], 'tinytext')) {
                                 // File upload.
                                 echo '<div class="input-group">';
 
-                                    echo Form::input($name, $element->{$name}, array('class'       => 'form-control',
-                                                                                        'placeholder' => 'http://...',
-                                                                                        'id'          => $name));
+                                    echo Form::input($name, $element->{$name}, $attr + array(
+                                        'class' => 'form-control',
+                                        'placeholder' => 'http://...',
+                                    ));
 
                                     echo '<a href="javascript:select_file(\'#'.$name.'\');" class="input-group-addon link-color"><i class="glyphicon glyphicon-upload"></i></a>';
 
@@ -139,8 +166,9 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
 
                                             <div class="modal-body">
                                                 <?php
-                                                echo Form::textarea($name, $element->{$name}, array('class' => 'form-control ckeditor',
-                                                                                                       'id'    => $name));
+                                                echo Form::textarea($name, $element->{$name}, $attr + array(
+                                                    'class' => 'form-control ckeditor',
+                                                ));
                                                 ?>
                                             </div>
                                         </div>
@@ -154,9 +182,9 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                             <?php
                             } else {
                                 // Standard text inputs.
-                                echo Form::input($name, $element->{$name}, array('class' => 'form-control',
-                                                                                    'id'    => $name));
-                                
+                                echo Form::input($name, $element->{$name}, $attr + array(
+                                    'class' => 'form-control',
+                                ));
                             }
                         }
                         ?>
@@ -174,7 +202,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
     foreach($element->has_many() as $relation => $options) {
         $has_many_through = $has_many_through ||
             (Arr::get($options, 'through') != '' &&
-            !in_array($relation, Arr::get($ignored_fields, $element->object_name(), array())));
+            !in_array($relation, $ignored_fields));
     }
     
     $model = $element->object_name();
@@ -192,7 +220,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
             <tbody>
                 <?php
                 foreach($element->has_many() as $relation => $options) {
-                    if(@$options['through'] == '' || in_array($relation, Arr::get($ignored_fields, $element->object_name(), array()))) {
+                    if(@$options['through'] == '' || in_array($relation, $ignored_fields)) {
                         continue;
                     }
                 ?>
@@ -208,7 +236,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
                             $relations = ORM::factory(ucfirst($options['model']))->find_all()->as_array('id', null);
                             $selected = $element->{$relation}->find_all()->as_array(null, 'id');
 
-                            echo Form::select($relation.'[]', $relations, $selected, array(
+                            echo Form::select($relation.'[]', $relations, $selected, $attr + array(
                                 'multiple' => true,
                                 'style' => 'width: 100%;'
                             ));
@@ -221,8 +249,7 @@ $ignored_fields = Kohana::$config->load('admin.ignored_fields');
     <?php } ?>
 
     <?php
-    echo Form::hidden('model', $model). // TODO : Is this necessary ?
-         Form::submit(null, __('general.submit'), array('class' => 'form-control btn btn-success'));
+    echo Form::submit(null, __('general.submit'), array('class' => 'form-control btn btn-success'));
 
     // Prefilling a field with a GET parameter
     // TODO : Rewrite this

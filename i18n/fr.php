@@ -11,6 +11,8 @@ return array(
     'general.value' => 'Valeur',
     'general.submit' => 'Soumettre',
     
+    'general.file.uploaded' => "Fichier téléversé avec succès",
+    
     'model.user.email' => "Courriel",
     'model.user.username' => "Nom d'utilisateur (pour le login)",
     'model.user.password' => "Mot de passe",

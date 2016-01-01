@@ -113,3 +113,8 @@ Notes :
 - [ ] Clean the filter view
 - [ ] Find a way not to use this module in the subfolder of a server without
 forcing a protocol ('http') with URL::site
+- [ ] Document undocumented features
+    - [ ] Password reset
+    - [ ] filters functions
+    - [ ] file upload
+    - [ ] fields attributes

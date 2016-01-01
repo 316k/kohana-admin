@@ -61,6 +61,18 @@ trait Manager {
         return View::factory('admin/manager/models', array('classes' => $classes));
     }
     
+    /**
+     * Before edit (before validation)
+     */
+    private function before_edit($model_name, $element, $posted_values) {
+        return $posted_values;
+    }
+    
+    /**
+     * If edit was successful
+     */
+    private function after_edit($model_name, $element) {}
+    
     public function action_manager() {
         
         // No model specified : list available models
@@ -108,12 +120,17 @@ trait Manager {
             }
 
             try {
+                
+                $posted_values = $this->before_edit($model_name, $element, $posted_values);
+                
                 $element->values($posted_values)->save();
                 
                 foreach($has_many_through_elements as $key => $posted_value) {
                     $element->add($key, $posted_value);
                 }
                 $element->save();
+                
+                $this->after_edit($model_name, $element);
                 
                 Notification::instance()->add('success', __('success-edit', array(':name' => (string) $element)));
                 
@@ -145,6 +162,8 @@ trait Manager {
             'model_name' => $model_name,
         ));
     }
+    
+    /** Forgotten password helpers **/
     
     private function post_forgot_password($user) {
         // Overload to send an email, notify, redirect, etc.
