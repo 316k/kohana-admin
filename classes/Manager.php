@@ -150,8 +150,8 @@ trait Manager {
             }
         } elseif($this->request->param('mode') == 'delete') {
             
-            $element->delete();
             Notification::instance()->add('success', __('success-delete', array(':name' => (string) $element)));
+            $element->delete();
             $this->redirect($redirect);
             
         }
