@@ -86,8 +86,8 @@ echo Form::open(NULL, $form);
                                       </a>';
                             } else if(strstr($infos['data_type'], 'tinyint')) {
                                 // Boolean data.
-                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() && $element->{$name} !== 1).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
-                                     '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->loaded() && $element->{$name} === 1, array('id' => $name)).' '.__('general-yes').'</label>';
+                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() && !$element->{$name}).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
+                                     '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->loaded() && !!$element->{$name}, array('id' => $name)).' '.__('general-yes').'</label>';
 
                             } else if(strstr($infos['data_type'], 'float')) {
                                 // For floating numbers.
