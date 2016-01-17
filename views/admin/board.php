@@ -25,16 +25,17 @@ $default_tab = Kohana::$config->load('admin.default_tab') ?: Arr::get(array_keys
         }
 
         $models = Arr::get($details, 'models', FALSE);
+        $model_name = Arr::get($details, 'model_name', $module);
 
         if($models === FALSE) {
-            $models = ORM::factory($module);
+            $models = ORM::factory($model_name);
         }
         ?>
         <div class="tab-pane<?php echo $default_tab == $module ? ' active' : '' ?>" id="tab<?php echo ucfirst($module); ?>">
             <?php
             foreach(Arr::get($details, 'views', array()) as $view) {
                 echo View::factory('admin/board/'.$view, array(
-                    'model_name' => $module,
+                    'model_name' => $model_name,
                     'details' => $details,
                     'models' => $models
                 ));
