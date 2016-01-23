@@ -98,7 +98,7 @@ trait Manager {
             $has_many_through_elements = array();
             
             foreach($element->has_many() as $relation => $options) {
-                if(@$options['through'] != '') {
+                if(@$options['through'] != '' && $this->request->post($relation)) {
                     $has_many_through_list[$relation] = $options;
                     
                     foreach(ORM::factory($options['model'])->find_all() as $el) {
