@@ -18,18 +18,20 @@ $ git commit -m 'Added kohana-admin'
 ### Mercurial (`hg`)
 
 ```bash
-$ echo "modules/kohana-admin = [git]git://github.com/316k/kohana-admin.git" >> .hgsub
+$ echo "modules/kohana-admin = [git]https://github.com/316k/kohana-admin.git" >> .hgsub
 $ hg add .hgsub
-$ git clone git://github.com/316k/kohana-admin.git modules/kohana-admin
+$ git clone https://github.com/316k/kohana-admin.git modules/kohana-admin
 ```
 
 ### Anything else
 
 ```bash
-$ git clone git://github.com/316k/kohana-admin.git modules/kohana-admin
+$ git clone https://github.com/316k/kohana-admin.git modules/kohana-admin
 ```
 
 ## Config
+
+Enable the module in APPPATH/bootstrap.php.
 
 Copy the file `modules/kohana-admin/config/admin.php` to APPPATH/config/admin.php and edit it :
 
