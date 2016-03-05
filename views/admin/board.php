@@ -45,6 +45,10 @@ $default_tab = Kohana::$config->load('admin.default_tab') ?: Arr::get(array_keys
     <?php endforeach ?>
 </div>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    $('#tabs a[href="' + window.location.hash + '"]').tab('show');
+});
+
 function confirm_delete(model, id) {
     if(confirm("Voulez-vous vraiement supprimer l'élément sélectionné ?")) {
         window.location = '<?php echo URL::site("/admin/delete", "http"); ?>/' + model + '/' + id;
