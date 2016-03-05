@@ -46,6 +46,10 @@ $default_tab = Kohana::$config->load('admin.default_tab') ?: Arr::get(array_keys
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    $('#tabs a').click(function() {
+        window.location.hash = $(this).attr('href');
+    });
+    
     $('#tabs a[href="' + window.location.hash + '"]').tab('show');
 });
 
