@@ -12,6 +12,7 @@ return array(
     'general.submit' => 'Soumettre',
     
     'general.file.uploaded' => "Fichier téléversé avec succès",
+    'general.file.see' => "Voir",
     
     'model.user.email' => "Courriel",
     'model.user.username' => "Nom d'utilisateur (pour le login)",

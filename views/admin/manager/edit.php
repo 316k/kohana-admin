@@ -72,11 +72,16 @@ echo Form::open(NULL, $form);
                         if(!$hasForeignKey) {
                             if(in_array($name, $upload_fields)) {
                                 echo Form::file($name, $attr + array(
-                                    'style' => 'width: 95%; display: inline;'
+                                    'style' => 'width: 75%; display: inline;'
                                 ));
                                 
                                 if($element->{$name}) {
-                                    echo '<abbr title="'.__('general.file.uploaded').'"><i class="glyphicon glyphicon-ok-sign" style="display: inline; color: green;"></i></abbr>';
+                                    echo '<a target="_blank" href="/assets/img-upload/'.$element->{$name}.'">
+                                            <abbr title="'.__('general.file.uploaded').'">
+                                                <i class="glyphicon glyphicon-ok-sign" style="display: inline; color: green;"></i> '.
+                                                __('general.file.see').
+                                           '</abbr>
+                                          </a>';
                                 }
                             } else if(in_array($name, $browse_for_fields)) {
                                 echo Form::hidden($name, $element->{$name}, $attr);
