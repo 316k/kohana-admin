@@ -5,13 +5,28 @@ $default_tab = Kohana::$config->load('admin.default_tab') ?: Arr::get(array_keys
 
 <ul id="tabs" class="nav nav-tabs" style="margin-bottom: 30px;">
     <?php foreach($modules as $module => $details): ?>
-        <li<?php echo $default_tab == $module ? ' class="active"' : '' ?>>
-            <a href="<?php echo @$details['href'] ?: '#tab'.ucfirst($module); ?>" <?php echo isset($details['href']) ? 'target="_blank"' : 'data-toggle="tab"'; ?>>
-                <i class="<?php echo Arr::get($details, 'icon', $default_icon); ?>"></i>
+        <li id="menu<?php echo $module ?>"<?php echo $default_tab == $module ? ' class="active"' : '' ?>>
+            <?php
+            $attributes = array(
+                'href' => Arr::get($details, 'href', '#tab'.ucfirst($module)),
+            );
 
-                <span class="hidden-xs hidden-print" style="margin-left: 10px;">
-                    <?php echo __('admin-board-'.strtolower($module)); ?>
-                </span>
+            $href = Arr::get($details, 'href');
+            if($href && $href != '#!') {
+                $attributes['target'] = '_blank';
+            } else if(!$href) {
+                $attributes['data-toggle'] = 'tab';
+            }
+            ?>
+            <a<?php echo HTML::attributes($attributes) ?>>
+                <i class="<?php echo Arr::get($details, 'icon', $default_icon) ?>"></i>
+                
+                <?php $label = __('admin-board-'.strtolower($module)) ?>
+                <?php if($label): ?>
+                    <span class="hidden-xs hidden-print" style="margin-left: 10px;">
+                        <?php echo $label ?>
+                    </span>
+                <?php endif ?>
             </a>
         </li>
     <?php endforeach ?>
@@ -20,7 +35,7 @@ $default_tab = Kohana::$config->load('admin.default_tab') ?: Arr::get(array_keys
 <div class="tab-content">
     <?php foreach($modules as $module => $details): ?>
         <?php
-        if(isset($details['href'])) {
+        if(Arr::get($details, 'href', '#!') != '#!') {
             continue;
         }
 
