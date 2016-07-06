@@ -10,6 +10,7 @@ return array(
     'general.add' => 'Ajouter',
     'general.value' => 'Valeur',
     'general.submit' => 'Soumettre',
+    'general.click-to-modify' => '(cliquez pour modifier)',
     
     'general.file.uploaded' => "Fichier téléversé avec succès",
     'general.file.see' => "Voir",

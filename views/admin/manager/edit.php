@@ -123,8 +123,8 @@ echo Form::open(NULL, $form);
 
                             } else if(strstr($infos['data_type'], 'datetime')) {
                                 // Date inputs.
-                                echo Form::input($name, $element->{$name}, $attr + array(
-                                    'placeholder' => 'AAAA-MM-JJ HH:mm:ss',
+                                echo Form::input($name, date('Y-m-d G:i', strtotime($element->{$name})), $attr + array(
+                                    'placeholder' => 'AAAA-MM-JJ HH:mm',
                                     'class' => 'datetimepicker form-control',
                                 ));
 
@@ -288,7 +288,7 @@ $protected_inputs = array_combine($protected_inputs, $protected_inputs);
         
         // Hashed inputs
         for(var input in protected_inputs) {
-            $('#' + input).val('(cliquez pour modifier)').click(function() {
+            $('#' + input).val(<?php echo json_encode(__('general.click-to-modify')) ?>).click(function() {
                 $(this).val('');
                 delete protected_inputs[input];
             });
