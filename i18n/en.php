@@ -10,6 +10,8 @@ return array(
     'general.add' => 'Add',
     'general.value' => 'Value',
     'general.submit' => 'Submit',
+    'general.cancel' => 'Cancel',
+    'general.back' => 'Back',
     'general.click-to-modify' => '(click to edit)',
     
     'general.file.uploaded' => "File uploaded with success",
