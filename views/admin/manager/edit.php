@@ -14,6 +14,8 @@ if($upload_fields)
 
 echo Form::open(NULL, $form);
 ?>
+<p><a class="btn btn-warning" href="#!" onclick="window.history.back()"><i class="glyphicon glyphicon-arrow-left"></i> <?php echo __('general.back') ?></a></p>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -254,7 +256,7 @@ echo Form::open(NULL, $form);
     <?php } ?>
 
     <?php
-    echo Form::submit(null, __('general.submit'), array('class' => 'form-control btn btn-success'));
+    echo Form::submit(null, __('general.submit'), array('class' => 'btn btn-success btn-lg', 'style' => 'width: 100%'));
 
     // Prefilling a field with a GET parameter
     // TODO : Rewrite this
