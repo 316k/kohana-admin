@@ -175,6 +175,7 @@ trait Manager {
             'models' => ORM::factory($model_name)->find_all(),
             'element' => $element,
             'model_name' => $model_name,
+            'query' => $this->request->query(),
         ));
     }
     

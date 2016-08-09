@@ -30,6 +30,7 @@ echo Form::open(NULL, $form);
                 if($infos['key'] == 'PRI' || in_array($name, $ignored_fields)) {
                     continue;
                 }
+                $value = $element->{$name} ?: Arr::get($query, $name);
                 $attr = Arr::get($fields_attributes, $name, array()) + array('id' => $name);
             ?>
                 <tr class="form-group">
@@ -62,7 +63,7 @@ echo Form::open(NULL, $form);
                                             $select_options[$rel->pk()] = (string) $rel;
                                         }
 
-                                        echo Form::select($name, $select_options, $element->{$name}, $attr + array('class' => 'form-control'));
+                                        echo Form::select($name, $select_options, $value, $attr + array('class' => 'form-control'));
                                         $hasForeignKey = true;
                                     } else {
                                         echo __('general-too_many_entries');
@@ -78,7 +79,7 @@ echo Form::open(NULL, $form);
                                 ));
                                 
                                 if($element->{$name}) {
-                                    echo '<a target="_blank" href="/assets/img-upload/'.$element->{$name}.'">
+                                    echo '<a target="_blank" href="/assets/img-upload/'.$value.'">
                                             <abbr title="'.__('general.file.uploaded').'">
                                                 <i class="glyphicon glyphicon-ok-sign" style="display: inline; color: green;"></i> '.
                                                 __('general.file.see').
@@ -86,19 +87,19 @@ echo Form::open(NULL, $form);
                                           </a>';
                                 }
                             } else if(in_array($name, $browse_for_fields)) {
-                                echo Form::hidden($name, $element->{$name}, $attr);
+                                echo Form::hidden($name, $value, $attr);
 
                                 echo '<a href="#!" onclick="window.open(\'/admin/search_panel/'.$name.'/'.$id.'\', \'dataitem\', \'toolbar=no,menubar=no,scrollbars=yes,width=700px,height=500px\');">
                                           Parcourir la liste <i class="glyphicon glyphicon-search"></i>
                                       </a>';
                             } else if(strstr($infos['data_type'], 'tinyint')) {
                                 // Boolean data.
-                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() && !$element->{$name}).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
-                                     '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->loaded() && !!$element->{$name}, array('id' => $name)).' '.__('general-yes').'</label>';
+                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() && !$value).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
+                                                                                  '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->loaded() && !!$value, array('id' => $name)).' '.__('general-yes').'</label>';
 
                             } else if(strstr($infos['data_type'], 'float')) {
                                 // For floating numbers.
-                                echo Form::input($name, $element->{$name}, $attr + array(
+                                echo Form::input($name, $value, $attr + array(
                                     'type'  => 'number',
                                     'step'  => 'any',
                                     'class' => 'form-control',
@@ -106,7 +107,7 @@ echo Form::open(NULL, $form);
 
                             } else if(strstr($infos['data_type'], 'int')) {
                                 // For numbers.
-                                echo Form::input($name, $element->{$name}, $attr + array(
+                                echo Form::input($name, $value, $attr + array(
                                     'type'  => 'number',
                                     'class' => 'form-control',
                                 ));
@@ -119,20 +120,20 @@ echo Form::open(NULL, $form);
                                     $options[$key] = __('model.'.$element->object_name().'.'.$name.'.'.$key);
                                 }
 
-                                echo Form::select($name, $options, $element->{$name}, $attr + array(
+                                echo Form::select($name, $options, $value, $attr + array(
                                     'class' => 'form-control',
                                 ));
 
                             } else if(strstr($infos['data_type'], 'datetime')) {
                                 // Date inputs.
-                                echo Form::input($name, date('Y-m-d G:i', strtotime($element->{$name})), $attr + array(
+                                echo Form::input($name, date('Y-m-d G:i', strtotime($value)), $attr + array(
                                     'placeholder' => 'AAAA-MM-JJ HH:mm',
                                     'class' => 'datetimepicker form-control',
                                 ));
 
                             } else if(strstr($infos['data_type'], 'date')) {
                                 // Date inputs.
-                                echo Form::input($name, $element->{$name}, $attr + array(
+                                echo Form::input($name, $value, $attr + array(
                                     'placeholder' => 'AAAA-MM-JJ',
                                     'class' => 'datepicker form-control',
                                 ));
@@ -140,12 +141,12 @@ echo Form::open(NULL, $form);
                                 // File upload.
                                 echo '<div class="input-group">';
 
-                                    echo Form::input($name, $element->{$name}, $attr + array(
-                                        'class' => 'form-control',
-                                        'placeholder' => 'http://...',
-                                    ));
+                                echo Form::input($name, $value, $attr + array(
+                                    'class' => 'form-control',
+                                    'placeholder' => 'http://...',
+                                ));
 
-                                    echo '<a href="javascript:select_file(\'#'.$name.'\');" class="input-group-addon link-color"><i class="glyphicon glyphicon-upload"></i></a>';
+                                echo '<a href="javascript:select_file(\'#'.$name.'\');" class="input-group-addon link-color"><i class="glyphicon glyphicon-upload"></i></a>';
 
                                 echo '</div>';
 
@@ -173,7 +174,7 @@ echo Form::open(NULL, $form);
 
                                             <div class="modal-body">
                                                 <?php
-                                                echo Form::textarea($name, $element->{$name}, $attr + array(
+                                                echo Form::textarea($name, $value, $attr + array(
                                                     'class' => 'form-control ckeditor',
                                                 ));
                                                 ?>
@@ -189,7 +190,7 @@ echo Form::open(NULL, $form);
                             <?php
                             } else {
                                 // Standard text inputs.
-                                echo Form::input($name, $element->{$name}, $attr + array(
+                                echo Form::input($name, $value, $attr + array(
                                     'class' => 'form-control',
                                 ));
                             }
