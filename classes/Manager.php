@@ -38,8 +38,8 @@ trait Manager {
         Auth::instance()->logout();
         $this->redirect(URL::site('/', 'http'));
     }
-    
-    public function manager_list() {
+
+    private function list_classes() {
         $class_names = array_keys(Arr::flatten(Kohana::list_files('classes/Model')));
         $classes = array();
         
@@ -58,7 +58,13 @@ trait Manager {
             }
         }
 
-        return View::factory('admin/manager/models', array('classes' => $classes));
+        return $classes;
+    }
+
+    
+    public function manager_list() {
+
+        return View::factory('admin/manager/models', array('classes' => $this->list_classes()));
     }
     
     /**
@@ -72,6 +78,8 @@ trait Manager {
      * If edit was successful
      */
     private function after_edit($model_name, $element) {}
+
+    private function can_edit($model_name, $element) {}
     
     public function action_manager() {
         
@@ -83,13 +91,20 @@ trait Manager {
         
         $model_name = $this->request->param('model');
         $element = ORM::factory($model_name, $this->request->param('id'));
+        $type = $this->request->param('mode');
         
         $this->title = __('pagename-admin-manager', array(':name' => $model_name));
+
+        if(in_array($type, array('edit', 'delete')) && !$this->can_edit($type, $model_name, $element)) {
+            throw new HTTP_Exception_403();
+        } else if(!in_array($type, array('edit', 'delete')) && !Auth::instance()->logged_in('admin')) {
+            throw new HTTP_Exception_403();
+        }
         
         $redirect = Kohana::$config->load('admin.redirect');
         $redirect = URL::site(str_replace(':model', $model_name, $redirect), 'http');
 
-        if($this->request->param('mode') == 'edit' && $this->request->method() == Request::POST) {
+        if($type == 'edit' && $this->request->method() == Request::POST) {
             
             $posted_values = $this->request->post();
             
@@ -148,7 +163,7 @@ trait Manager {
                     Notification::instance()->add('danger', __('error-database'));
                 }
             }
-        } elseif($this->request->param('mode') == 'delete') {
+        } elseif($type == 'delete') {
             
             Notification::instance()->add('success', __('success-delete', array(':name' => (string) $element)));
             $element->delete();
@@ -156,7 +171,7 @@ trait Manager {
             
         }
         
-        $this->content = View::factory("admin/manager/" . $this->request->param('mode'), array(
+        $this->content = View::factory("admin/manager/" . $type, array(
             'models' => ORM::factory($model_name)->find_all(),
             'element' => $element,
             'model_name' => $model_name,
@@ -204,6 +219,26 @@ trait Manager {
         }
         
         $this->content = View::factory('admin/reset_password');
+    }
+
+    public function action_translations_helper() {
+        $this->content = '<pre>';
+        
+        if(!$this->request->param('id')) {
+            
+            foreach($this->list_classes() as $class) {
+                $this->content .= View::factory('admin/manager/translations-helper', array(
+                    'model' => ORM::factory($class),
+                )).'<br />';
+            }
+            
+        } else {
+            $this->content .= View::factory('admin/manager/translations-helper', array(
+                'model' => ORM::factory($this->request->param('id')),
+            ));
+        }
+
+        $this->content .= '</pre>';
     }
     
     /**
