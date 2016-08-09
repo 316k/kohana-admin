@@ -14,6 +14,8 @@ if($upload_fields)
 
 echo Form::open(NULL, $form);
 ?>
+<p><a class="btn btn-warning" href="#!" onclick="window.history.back()"><i class="glyphicon glyphicon-arrow-left"></i> <?php echo __('general.back') ?></a></p>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -123,8 +125,8 @@ echo Form::open(NULL, $form);
 
                             } else if(strstr($infos['data_type'], 'datetime')) {
                                 // Date inputs.
-                                echo Form::input($name, $element->{$name}, $attr + array(
-                                    'placeholder' => 'AAAA-MM-JJ HH:mm:ss',
+                                echo Form::input($name, date('Y-m-d G:i', strtotime($element->{$name})), $attr + array(
+                                    'placeholder' => 'AAAA-MM-JJ HH:mm',
                                     'class' => 'datetimepicker form-control',
                                 ));
 
@@ -254,7 +256,7 @@ echo Form::open(NULL, $form);
     <?php } ?>
 
     <?php
-    echo Form::submit(null, __('general.submit'), array('class' => 'form-control btn btn-success'));
+    echo Form::submit(null, __('general.submit'), array('class' => 'btn btn-success btn-lg', 'style' => 'width: 100%'));
 
     // Prefilling a field with a GET parameter
     // TODO : Rewrite this
@@ -288,7 +290,7 @@ $protected_inputs = array_combine($protected_inputs, $protected_inputs);
         
         // Hashed inputs
         for(var input in protected_inputs) {
-            $('#' + input).val('(cliquez pour modifier)').click(function() {
+            $('#' + input).val(<?php echo json_encode(__('general.click-to-modify')) ?>).click(function() {
                 $(this).val('');
                 delete protected_inputs[input];
             });
