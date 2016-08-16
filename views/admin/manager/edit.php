@@ -153,7 +153,7 @@ echo Form::open(NULL, $form);
                             } else if(strstr($infos['data_type'], 'longtext')) {
                                 // Textarea.
                             ?>
-                                <div class="modal fade" id="modal-<?php echo $name; ?>" tabindex="-1" role="dialog" aria-labelledby="label-modal-<?php echo $name; ?>" aria-hidden="true">
+                                <div class="modal fade" id="modal-<?php echo $name ?>" tabindex="-1" role="dialog" aria-labelledby="label-modal-<?php echo $name ?>" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -298,3 +298,10 @@ $protected_inputs = array_combine($protected_inputs, $protected_inputs);
         };
     });
 </script>
+<style>
+    @media screen and (min-width: 768px) {
+        .modal-dialog {
+            width: 65%;
+        }
+    }
+</style>
