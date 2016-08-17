@@ -30,7 +30,11 @@ echo Form::open(NULL, $form);
                 if($infos['key'] == 'PRI' || in_array($name, $ignored_fields)) {
                     continue;
                 }
-                $value = $element->{$name} ?: Arr::get($query, $name);
+                $value = $element->{$name};
+
+                if($value === NULL)
+                    Arr::get($query, $name);
+                
                 $attr = Arr::get($fields_attributes, $name, array()) + array('id' => $name);
             ?>
                 <tr class="form-group">
@@ -94,8 +98,8 @@ echo Form::open(NULL, $form);
                                       </a>';
                             } else if(strstr($infos['data_type'], 'tinyint')) {
                                 // Boolean data.
-                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $element->loaded() && !$value).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
-                                                                                  '<label style="font-weight: normal;">'.Form::radio($name, 1, $element->loaded() && !!$value, array('id' => $name)).' '.__('general-yes').'</label>';
+                                echo '<label style="font-weight: normal;">'.Form::radio($name, 0, $value !== NULL && !$value).' '.__('general-no').'</label>&nbsp;&nbsp;&nbsp;'.
+                                                                                  '<label style="font-weight: normal;">'.Form::radio($name, 1, $value !== NULL && !!$value, array('id' => $name)).' '.__('general-yes').'</label>';
 
                             } else if(strstr($infos['data_type'], 'float')) {
                                 // For floating numbers.
@@ -121,6 +125,18 @@ echo Form::open(NULL, $form);
                                 }
 
                                 echo Form::select($name, $options, $value, $attr + array(
+                                    'class' => 'form-control',
+                                ));
+                                
+                            } else if(strstr($infos['data_type'], 'set')) {
+                                // A select box for enum values.
+                                $keys = $element->enum_field_values($name);
+                                $options = array();
+                                foreach($keys as $key) {
+                                    $options[$key] = __('model.'.$element->object_name().'.'.$name.'.'.$key);
+                                }
+                                
+                                echo Form::select($name.'[]', $options, explode(',', $value), $attr + array(
                                     'class' => 'form-control',
                                 ));
 
