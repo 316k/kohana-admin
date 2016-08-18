@@ -109,6 +109,7 @@ Notes :
 - `label` will be passed to the `__()` (i18n) function.
 - The values ':id' and ':model' values in entries of `button` will be replaced by (respectively) the corresponding `$model->pk()` and the corresponding `ModelName`
 
+
 ## TODO
 
 - [ ] Non-bootstrap template
