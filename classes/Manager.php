@@ -134,10 +134,17 @@ trait Manager {
                 }
             }
 
+            foreach($posted_values as $key => $value) {
+                // Corrects SET values
+                if(Arr::get(Arr::get($element->table_columns(), $key), 'data_type') === 'set') {
+                    $posted_values[$key] = implode(',', $value);
+                }
+            }
+
             try {
                 
                 $posted_values = $this->before_edit($model_name, $element, $posted_values);
-                
+
                 $element->values($posted_values)->save();
                 
                 foreach($has_many_through_elements as $key => $posted_value) {
