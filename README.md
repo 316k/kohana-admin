@@ -120,3 +120,4 @@ forcing a protocol ('http') with URL::site
     - [ ] filters functions
     - [ ] file upload
     - [ ] fields attributes
+    - [ ] multi-user config
