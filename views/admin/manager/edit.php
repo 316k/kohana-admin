@@ -33,7 +33,8 @@ echo Form::open(NULL, $form);
                 $value = $element->{$name};
 
                 if($value === NULL)
-                    Arr::get($query, $name);
+                    $value = Arr::get($query, $name);
+
                 
                 $attr = Arr::get($fields_attributes, $name, array()) + array('id' => $name);
             ?>
