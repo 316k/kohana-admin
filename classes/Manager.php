@@ -79,7 +79,9 @@ trait Manager {
      */
     private function after_edit($model_name, $element) {}
 
-    private function can_edit($model_name, $element) {}
+    private function can_edit($model_name, $element) {
+        return TRUE;
+    }
     
     public function action_manager() {
         
