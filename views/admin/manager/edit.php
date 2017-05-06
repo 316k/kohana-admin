@@ -308,7 +308,7 @@ $protected_inputs = array_combine($protected_inputs, $protected_inputs);
         
         // Hashed inputs
         for(var input in protected_inputs) {
-            $('#' + input).val(<?php echo json_encode(__('general.click-to-modify')) ?>).click(function() {
+            $('#' + input).val(<?php echo json_encode(__('general.click-to-modify')) ?>).on('click focus', function() {
                 $(this).val('');
                 delete protected_inputs[input];
             });
