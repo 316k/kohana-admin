@@ -2,7 +2,7 @@
 $buttons = array('side' => array(), 'bottom' => array());
 
 // Parse buttons
-foreach(Arr::get($details, 'list_buttons') as $button => $options) {
+foreach(Arr::get($details, 'list_buttons', array('add', 'edit', 'delete')) as $button => $options) {
     
     // Predefined buttons
     if(is_numeric($button)) {
