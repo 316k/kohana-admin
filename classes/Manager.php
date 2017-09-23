@@ -250,6 +250,60 @@ trait Manager {
 
         $this->content .= '</pre>';
     }
+
+    public function action_mass_edit() {
+
+        $profile = Kohana::$config->load('admin.mass_edit_profiles.'.$this->request->param('id'));
+
+        if(!$profile)
+            throw new HTTP_Exception_404();
+
+        $model_name = $profile['model_name'];
+        $models = Arr::get($profile, 'models', ORM::factory($model_name));
+        $edit_columns = Arr::get($profile, 'edit_columns', array());
+        $shown_columns = Arr::get($profile, 'shown_columns', array());
+
+        if($this->request->method() === Request::POST) {
+
+            $edit_element = $models->where(strtolower($model_name).'.id', '=', $this->request->post('id'))->find();
+
+            $edit_column = $this->request->post('column');
+
+            if(!in_array($edit_column, $edit_columns))
+                throw new HTTP_Exception_403();
+
+            $model_and_field = explode('.', $edit_column);
+
+            if(count($model_and_field) == 1) {
+                $model = $edit_element;
+                $field = $model_and_field[0];
+            } else {
+
+                if(method_exists($edit_element, $model_and_field[0]))
+                    $model = $edit_element->{$model_and_field[0]}();
+                else
+                    $model = $edit_element->{$model_and_field[0]};
+
+                $field = $model_and_field[1];
+            }
+
+            $model->{$field} = $this->request->post('value');
+
+            $model->save();
+
+            die('ok');
+        }
+
+        $this->content = View::factory('admin/board/mass_edit', array(
+            'model_name' => $profile['model_name'],
+            'details' => array(
+                'edit_columns' => $edit_columns,
+                'models' => $models,
+                'shown_columns' => $shown_columns,
+                'mass_edit_profile' => $this->request->param('id'),
+            ),
+        ));
+    }
     
     /**
      * Call this to create an arbitrary user, you'll probably need to do this

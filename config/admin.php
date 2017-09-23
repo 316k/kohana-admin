@@ -10,6 +10,7 @@ return array(
     ),
     'fields_attributes' => array(),
     'redirect' => "/admin/board/#tab:model",
+    'mass_edit_profiles' => array(),
     'modules' => array(),
     'default_tab' => NULL,
     'null_value' => "{NULL_ON_PURPOSE}",
