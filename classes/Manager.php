@@ -79,7 +79,7 @@ trait Manager {
      */
     private function after_edit($model_name, $element) {}
 
-    private function can_edit($model_name, $element) {
+    private function can_edit($type, $model_name, $element) {
         return TRUE;
     }
     
@@ -107,7 +107,12 @@ trait Manager {
         $redirect = URL::site(str_replace(':model', $model_name, $redirect), 'http');
 
         if($type == 'edit' && $this->request->method() == Request::POST) {
-            
+
+            $expected_fields = array_keys($element->table_columns());
+            $expected_fields = array_merge($expected_fields, array_keys($element->has_many()));
+            $expected_fields = array_diff($expected_fields, Kohana::$config->load('admin.ignored_fields.' . $element->object_name()));
+            $expected_fields = array_diff($expected_fields, array($element->primary_key()));
+
             $posted_values = $this->request->post();
             
             // "has many through" list.
@@ -115,7 +120,7 @@ trait Manager {
             $has_many_through_elements = array();
             
             foreach($element->has_many() as $relation => $options) {
-                if(@$options['through'] != '' && $this->request->post($relation)) {
+                if(@$options['through'] != '' && $this->request->post($relation) && in_array($relation, $expected_fields)) {
                     $has_many_through_list[$relation] = $options;
                     
                     foreach(ORM::factory($options['model'])->find_all() as $el) {
@@ -138,7 +143,7 @@ trait Manager {
 
             foreach($posted_values as $key => $value) {
                 // Corrects SET values
-                if(Arr::get(Arr::get($element->table_columns(), $key), 'data_type') === 'set') {
+                if(in_array($key, $expected_fields) && Arr::get(Arr::get($element->table_columns(), $key), 'data_type') === 'set') {
                     $posted_values[$key] = implode(',', $value);
                 }
             }
@@ -147,7 +152,7 @@ trait Manager {
                 
                 $posted_values = $this->before_edit($model_name, $element, $posted_values);
 
-                $element->values($posted_values)->save();
+                $element->values($posted_values, array_intersect($expected_fields, array_keys($element->table_columns())))->save();
                 
                 foreach($has_many_through_elements as $key => $posted_value) {
                     $element->add($key, $posted_value);
